@@ -1,0 +1,10 @@
+body {
+  margin: 2rem auto;
+  max-width: 40rem;
+  padding: 0 1rem;
+  font: 18px/1.5 Georgia, "Iowan Old Style", Palatino, serif;
+  color: #1f1a17;
+  background: #f4f1ea;
+}
+
+a { color: #9a3412; }
