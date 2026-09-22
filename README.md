@@ -1,27 +1,21 @@
-# cookiecutter-flask
+# cookiecutter-flask-layout
 
 Cookiecutter for a Flask application. It stamps out an empty project: app factory, config, SQLAlchemy, and migrations. There is no sample domain.
 
-Rename this repository to **cookiecutter-flask**.
+Rename this repository to **cookiecutter-flask-layout**. `cookiecutter-flask` is already the Bootstrap and login template.
 
 ## Generate a project
 
-Install [uv](https://docs.astral.sh/uv/). Until this GitHub repo is renamed:
+Install [uv](https://docs.astral.sh/uv/).
 
 ```bash
-uvx cookiecutter gh:syedwaseemjan/Flample
-```
-
-After the rename:
-
-```bash
-uvx cookiecutter gh:syedwaseemjan/cookiecutter-flask
+uvx cookiecutter gh:syedwaseemjan/cookiecutter-flask-layout
 ```
 
 From a local checkout:
 
 ```bash
-uvx cookiecutter /path/to/cookiecutter-flask
+uvx cookiecutter /path/to/cookiecutter-flask-layout
 ```
 
 The defaults create `flask-app/` with the Python package `flaskapp`. Change the project name when prompted.
