@@ -40,7 +40,7 @@ src/<package>/
 
 Import each new module from the `__init__.py` beside it. `api/health.py` and `web/views/index.py` show the route shape. `services/` starts empty; put query and transaction code there when a feature needs it.
 
-`APP_ENV=production` refuses to start until `SECRET_KEY` and `DATABASE_URL` are set. Development uses a SQLite file under `instance/` when `DATABASE_URL` is unset.
+Development and tests use SQLite. `APP_ENV=production` uses Postgres and refuses to start until `SECRET_KEY` is set and `DATABASE_URL` is a `postgresql+psycopg://` URL.
 
 ## Check the template
 

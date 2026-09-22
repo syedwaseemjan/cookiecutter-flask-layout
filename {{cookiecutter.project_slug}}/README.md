@@ -14,9 +14,11 @@ uv run pre-commit install
 uv run flask run --debug
 ```
 
-Open http://127.0.0.1:5000. `APP_ENV=production` refuses to boot until `SECRET_KEY` and `DATABASE_URL` are set, and it marks the session cookie Secure.
+Open http://127.0.0.1:5000. `/` renders this project's name. `GET /api/health` returns JSON.
 
-`/` renders this project's name. `GET /api/health` returns JSON.
+## Database
+
+Development uses a SQLite file under `instance/` when `DATABASE_URL` is unset. Tests use an in-memory SQLite database. Production uses Postgres. `APP_ENV=production` refuses to boot until `SECRET_KEY` is set and `DATABASE_URL` is a `postgresql+psycopg://` URL, and it marks the session cookie Secure.
 
 ## Where code goes
 

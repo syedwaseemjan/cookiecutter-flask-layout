@@ -37,8 +37,8 @@ def test_production_requires_database_url(monkeypatch):
         create_app(Production)
 
 
-def test_production_accepts_database_url(monkeypatch, tmp_path):
-    database_url = f"sqlite:///{tmp_path / 'app.db'}"
+def test_production_accepts_postgres_url(monkeypatch):
+    database_url = "postgresql+psycopg://localhost/app"
     monkeypatch.setenv("DATABASE_URL", database_url)
 
     class Production(ProductionConfig):
@@ -46,6 +46,16 @@ def test_production_accepts_database_url(monkeypatch, tmp_path):
 
     application = create_app(Production)
     assert application.config["SQLALCHEMY_DATABASE_URI"] == database_url
+
+
+def test_production_rejects_sqlite(monkeypatch):
+    monkeypatch.setenv("DATABASE_URL", "sqlite:////tmp/app.db")
+
+    class Production(ProductionConfig):
+        SECRET_KEY = "production-secret"
+
+    with pytest.raises(RuntimeError, match="PostgreSQL"):
+        create_app(Production)
 
 
 def test_upgrade(tmp_path):

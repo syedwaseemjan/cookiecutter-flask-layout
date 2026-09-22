@@ -40,17 +40,25 @@ def create_app(config_class: type[Config] | None = None) -> Flask:
 
 
 def _configure_database(app: Flask) -> None:
-    if app.config.get("SQLALCHEMY_DATABASE_URI"):
-        return
-    configured = os.environ.get("DATABASE_URL")
-    if configured:
-        app.config["SQLALCHEMY_DATABASE_URI"] = configured
-        return
+    uri = app.config.get("SQLALCHEMY_DATABASE_URI") or os.environ.get("DATABASE_URL")
     if app.config.get("DATABASE_REQUIRED"):
-        raise RuntimeError("Set DATABASE_URL before starting the app")
+        if not uri:
+            raise RuntimeError("Set DATABASE_URL before starting the app")
+        if not _is_postgres(uri):
+            raise RuntimeError("DATABASE_URL must be a PostgreSQL URL in production")
+        app.config["SQLALCHEMY_DATABASE_URI"] = uri
+        return
+    if uri:
+        app.config["SQLALCHEMY_DATABASE_URI"] = uri
+        return
     Path(app.instance_path).mkdir(parents=True, exist_ok=True)
     db_path = Path(app.instance_path) / "{{ cookiecutter.project_slug }}.db"
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
+
+
+def _is_postgres(url: str) -> bool:
+    scheme = url.split(":", 1)[0]
+    return scheme == "postgres" or scheme.startswith("postgresql")
 
 
 def _register_error_handlers(app: Flask) -> None:
