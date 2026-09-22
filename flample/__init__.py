@@ -1,6 +1,0 @@
-"""
-    flample
-    ~~~~~~~~
-
-    flample application package
-"""
