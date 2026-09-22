@@ -1,4 +1,7 @@
-"""REST modules. Add one module per resource and import it below."""
+"""REST modules. Add one module per resource and import it below.
+
+Routes call services. They do not use ``db.session``.
+"""
 
 from flask import Blueprint
 

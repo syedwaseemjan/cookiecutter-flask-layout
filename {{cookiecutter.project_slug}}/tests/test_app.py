@@ -1,5 +1,7 @@
+import pytest
+
 from {{ cookiecutter.package_name }} import create_app
-from {{ cookiecutter.package_name }}.config import DevelopmentConfig
+from {{ cookiecutter.package_name }}.config import DevelopmentConfig, ProductionConfig
 
 
 def test_index(client):
@@ -23,6 +25,27 @@ def test_unknown_api_route(client):
 def test_stylesheet(client):
     response = client.get("/static/css/app.css")
     assert response.status_code == 200
+
+
+def test_production_requires_database_url(monkeypatch):
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+
+    class Production(ProductionConfig):
+        SECRET_KEY = "production-secret"
+
+    with pytest.raises(RuntimeError, match="DATABASE_URL"):
+        create_app(Production)
+
+
+def test_production_accepts_database_url(monkeypatch, tmp_path):
+    database_url = f"sqlite:///{tmp_path / 'app.db'}"
+    monkeypatch.setenv("DATABASE_URL", database_url)
+
+    class Production(ProductionConfig):
+        SECRET_KEY = "production-secret"
+
+    application = create_app(Production)
+    assert application.config["SQLALCHEMY_DATABASE_URI"] == database_url
 
 
 def test_upgrade(tmp_path):

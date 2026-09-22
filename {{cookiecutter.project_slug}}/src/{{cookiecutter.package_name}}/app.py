@@ -46,6 +46,8 @@ def _configure_database(app: Flask) -> None:
     if configured:
         app.config["SQLALCHEMY_DATABASE_URI"] = configured
         return
+    if app.config.get("DATABASE_REQUIRED"):
+        raise RuntimeError("Set DATABASE_URL before starting the app")
     Path(app.instance_path).mkdir(parents=True, exist_ok=True)
     db_path = Path(app.instance_path) / "{{ cookiecutter.project_slug }}.db"
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"

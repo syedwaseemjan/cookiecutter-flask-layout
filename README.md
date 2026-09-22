@@ -1,8 +1,8 @@
 # cookiecutter-flask-layout
 
-Cookiecutter for a Flask application. It stamps out an empty project: app factory, config, SQLAlchemy, and migrations. There is no sample domain.
+Cookiecutter for a Flask application laid out in technical layers. A resource is split across `api/`, `web/views/`, `web/templates/`, `models/`, and `services/`.
 
-Rename this repository to **cookiecutter-flask-layout**. `cookiecutter-flask` is already the Bootstrap and login template.
+Web views and API modules call services. Services use models and the database session. Services do not import Flask request, response, or template helpers. Models do not import Flask. A module is part of the app only after its package `__init__.py` imports it.
 
 ## Generate a project
 
@@ -23,9 +23,24 @@ The defaults create `flask-app/` with the Python package `flaskapp`. Change the 
 ## What you get
 
 - Python 3.12 or 3.13, Flask 3, SQLAlchemy 2, and Alembic through Flask-Migrate
-- Packages for REST modules (`api/`), page modules (`web/views/`), models, and services
+- Layer packages for REST modules (`api/`), pages (`web/views/`), models, and services
 - uv, Ruff, pytest, and pre-commit
 - A lockfile, written by `uv lock` at generation time when uv is installed
+
+## Layout
+
+```text
+src/<package>/
+  api/<resource>.py
+  web/views/<resource>.py
+  web/templates/<resource>.html
+  models/<resource>.py
+  services/<resource>.py
+```
+
+Import each new module from the `__init__.py` beside it. `api/health.py` and `web/views/index.py` show the route shape. `services/` starts empty; put query and transaction code there when a feature needs it.
+
+`APP_ENV=production` refuses to start until `SECRET_KEY` and `DATABASE_URL` are set. Development uses a SQLite file under `instance/` when `DATABASE_URL` is unset.
 
 ## Check the template
 

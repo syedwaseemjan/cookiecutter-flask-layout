@@ -14,21 +14,26 @@ uv run pre-commit install
 uv run flask run --debug
 ```
 
-Open http://127.0.0.1:5000. `APP_ENV=production` refuses to boot until `SECRET_KEY` is set, and it marks the session cookie Secure.
+Open http://127.0.0.1:5000. `APP_ENV=production` refuses to boot until `SECRET_KEY` and `DATABASE_URL` are set, and it marks the session cookie Secure.
 
 `/` renders this project's name. `GET /api/health` returns JSON.
 
 ## Where code goes
 
+Code is split by technical layer. One resource uses these files:
+
 ```text
 src/{{ cookiecutter.package_name }}/
-  api/            one module per REST resource, imported from api/__init__.py
-  web/views/      one module per page, imported from web/views/__init__.py
-  models/         SQLAlchemy models, imported from models/__init__.py
-  services/       called by views and API modules
+  api/<resource>.py              REST routes, imported from api/__init__.py
+  web/views/<resource>.py        HTML routes, imported from web/views/__init__.py
+  web/templates/<resource>.html
+  models/<resource>.py           imported from models/__init__.py
+  services/<resource>.py
 ```
 
-`api/health.py` and `web/views/index.py` show the shape. Copy one of those when you add a module, and import the new module from the package `__init__.py` next to it. After adding a model, create a migration with `uv run flask db migrate`.
+Web views and API modules call services. Services use models and `db.session`. Services do not import Flask's request, response, or template helpers. Models do not import Flask.
+
+A module is registered only when the package `__init__.py` next to it imports it. `api/health.py` and `web/views/index.py` show the route shape. Copy one of those when you add a module. `services/` starts empty. After adding a model, create a migration with `uv run flask db migrate`.
 
 ## Checks
 
