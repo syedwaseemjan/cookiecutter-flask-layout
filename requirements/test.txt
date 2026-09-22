@@ -1,5 +1,0 @@
-# Test dependencies go here.
--r base.txt
-
-factory-boy==3.2.1
-pytest==7.1.2
