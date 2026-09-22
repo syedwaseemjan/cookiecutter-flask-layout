@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "{{ cookiecutter.project_slug }}"
+version = "0.1.0"
+description = "{{ cookiecutter.project_short_description }}"
+readme = "README.md"
+license = "MIT"
+requires-python = ">={{ cookiecutter.python_version }}"
+authors = [
+  { name = "{{ cookiecutter.full_name }}", email = "{{ cookiecutter.email }}" },
+]
+dependencies = [
+  "flask>=3.1,<4",
+  "flask-migrate>=4.1,<5",
+  "flask-sqlalchemy>=3.1,<4",
+  "python-dotenv>=1,<2",
+  "sqlalchemy>=2,<3",
+]
+
+[dependency-groups]
+dev = [
+  "pre-commit>=4,<5",
+  "pytest>=8,<10",
+  "ruff>=0.11",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/{{ cookiecutter.package_name }}"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra"
+
+[tool.ruff]
+target-version = "py{{ cookiecutter.python_version | replace('.', '') }}"
+line-length = 100
+src = ["src", "tests"]
+extend-exclude = ["migrations/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["{{ cookiecutter.package_name }}", "tests"]
