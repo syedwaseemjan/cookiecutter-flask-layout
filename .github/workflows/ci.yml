@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  generated-project:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+        with:
+          python-version: "3.12"
+      - name: Render the template
+        run: uvx cookiecutter . --no-input --output-dir /tmp/generated
+      - name: Test the generated project
+        working-directory: /tmp/generated/flask-app
+        run: |
+          uv sync --all-groups
+          uv run ruff check .
+          uv run ruff format --check .
+          uv run pytest
